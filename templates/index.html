@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Bài thực hành Cloud Computing: triển khai Python Flask theo mô hình PaaS trên Render.">
+  <title>CLOUD COMPUTING – TASK 03</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="{{ url_for('index') }}" aria-label="Trang chủ Cloud Lab">
+        <span class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M7 18h11a4 4 0 0 0 .3-8A6.5 6.5 0 0 0 5.8 8.6 4.8 4.8 0 0 0 7 18Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        </span>
+        Cloud<span class="brand-light">Lab.</span>
+      </a>
+      <span class="header-note">ĐIỆN TOÁN ĐÁM MÂY <span class="header-divider">/</span> BÀI THỰC HÀNH 03</span>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span aria-hidden="true"></span> PLATFORM AS A SERVICE</p>
+          <h1 id="page-title">CLOUD COMPUTING <span>– TASK 03</span></h1>
+          <p class="hero-subtitle">Triển khai ứng dụng Python Flask trên nền tảng PaaS</p>
+          <p class="hero-description">Từ mã nguồn đến ứng dụng web. Một bản demo nhỏ để khám phá cách Render vận hành ứng dụng Python trên đám mây.</p>
+          <div class="app-status"><span class="status-dot" aria-hidden="true"></span>Ứng dụng đang hoạt động</div>
+        </div>
+
+        <div class="architecture" aria-label="Luồng triển khai: mã nguồn Python Flask lên nền tảng Render để cung cấp ứng dụng web">
+          <div class="architecture-top"><span class="small-label">LUỒNG TRIỂN KHAI</span><span class="diagram-tag">PaaS</span></div>
+          <div class="source-node">
+            <span class="code-icon" aria-hidden="true">&lt;/&gt;</span>
+            <div><strong>Python + Flask</strong><span>Mã nguồn ứng dụng</span></div>
+            <span class="file-tag">app.py</span>
+          </div>
+          <div class="connector" aria-hidden="true"><span>↓</span><small>BUILD &amp; DEPLOY</small></div>
+          <div class="platform-node">
+            <span class="platform-symbol" aria-hidden="true">R</span>
+            <div><strong>Render</strong><span>Platform as a Service</span></div>
+            <svg class="cloud-outline" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 18h11a4 4 0 0 0 .3-8A6.5 6.5 0 0 0 5.8 8.6 4.8 4.8 0 0 0 7 18Z" stroke="currentColor" stroke-width="1.5"/></svg>
+          </div>
+          <p class="diagram-caption">Bạn viết ứng dụng. Nền tảng quản lý hạ tầng.</p>
+          <p class="diagram-footnote">Sơ đồ minh họa mô hình triển khai</p>
+        </div>
+      </section>
+
+      <section class="stack-strip" aria-label="Thông tin công nghệ">
+        <div><span class="stack-label">NỀN TẢNG</span><strong>Render <span class="mini-arrow" aria-hidden="true">↗</span></strong></div>
+        <div><span class="stack-label">NGÔN NGỮ LẬP TRÌNH</span><strong>Python</strong></div>
+        <div><span class="stack-label">FRAMEWORK</span><strong>Flask</strong></div>
+        <div><span class="stack-label">MÔ HÌNH DỊCH VỤ</span><strong>PaaS <span class="stack-detail">Platform as a Service</span></strong></div>
+      </section>
+
+      <section class="health-section" aria-labelledby="health-title">
+        <div class="health-copy">
+          <p class="eyebrow muted">KẾT NỐI VỚI BACKEND</p>
+          <h2 id="health-title">Một cú nhấn.<br>Một phản hồi thật.</h2>
+          <p>Gửi yêu cầu đến Flask và xem JSON trả về từ endpoint <code>/health</code> để kiểm tra backend.</p>
+          <button id="check-button" type="button"><span id="button-label">Kiểm tra ứng dụng</span><span aria-hidden="true">↗</span></button>
+          <p class="request-note">JavaScript fetch → Flask → JSON</p>
+          <noscript><p class="noscript-note">Hãy bật JavaScript hoặc mở trực tiếp <a href="{{ url_for('health') }}">/health</a> để kiểm tra.</p></noscript>
+        </div>
+        <div class="response-panel">
+          <div class="response-toolbar"><span><span class="method-tag">GET</span> /health</span><span id="response-badge" class="response-badge">CHƯA KIỂM TRA</span></div>
+          <div class="response-content">
+            <p class="terminal-label">PHẢN HỒI TỪ MÁY CHỦ</p>
+            <pre id="response-body">// Nhấn “Kiểm tra ứng dụng”
+// để nhận phản hồi trực tiếp từ Flask.</pre>
+          </div>
+          <p id="request-status" class="request-status" role="status" aria-live="polite">Sẵn sàng gửi yêu cầu.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer><span>Cloud Computing <span aria-hidden="true">·</span> Task 03</span><span>Python Flask <span aria-hidden="true">/</span> Render PaaS</span></footer>
+  </div>
+
+  <script>
+    const button = document.getElementById("check-button");
+    const buttonLabel = document.getElementById("button-label");
+    const responseBody = document.getElementById("response-body");
+    const responseBadge = document.getElementById("response-badge");
+    const requestStatus = document.getElementById("request-status");
+
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      buttonLabel.textContent = "Đang kiểm tra…";
+      responseBadge.textContent = "ĐANG GỬI";
+      responseBadge.className = "response-badge";
+      requestStatus.textContent = "Đang gọi GET /health…";
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 10000);
+
+      try {
+        const response = await fetch({{ url_for('health') | tojson }}, {
+          cache: "no-store",
+          signal: controller.signal
+        });
+        if (!response.ok) throw new Error(`Máy chủ trả về HTTP ${response.status}.`);
+        const data = await response.json();
+        if (data.status !== "ok" || typeof data.message !== "string") {
+          throw new Error("Phản hồi JSON không đúng cấu trúc mong đợi.");
+        }
+        responseBody.textContent = JSON.stringify(data, null, 2);
+        responseBadge.textContent = `${response.status} OK`;
+        responseBadge.className = "response-badge success";
+        requestStatus.textContent = "Kiểm tra thành công. Backend Flask đã phản hồi.";
+      } catch (error) {
+        responseBadge.textContent = "LỖI KẾT NỐI";
+        responseBadge.className = "response-badge error";
+        const message = error.name === "AbortError"
+          ? "Yêu cầu quá thời gian chờ 10 giây. Hãy thử lại."
+          : error.message;
+        responseBody.textContent = message;
+        requestStatus.textContent = "Kiểm tra chưa thành công. Kiểm tra kết nối và thử lại.";
+      } finally {
+        clearTimeout(timer);
+        button.disabled = false;
+        buttonLabel.textContent = "Kiểm tra ứng dụng";
+      }
+    });
+  </script>
+</body>
+</html>
