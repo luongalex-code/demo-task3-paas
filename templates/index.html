@@ -3,124 +3,213 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Bài thực hành Cloud Computing: triển khai Python Flask theo mô hình PaaS trên Render.">
-  <title>CLOUD COMPUTING – TASK 03</title>
+  <meta name="description" content="Hồ sơ sinh viên Lương Triều Dĩ, lớp CNTT01, Đại học Thủ Dầu Một. Bài thực hành triển khai ứng dụng web trên AWS Elastic Beanstalk.">
+  <meta name="theme-color" content="#f4f7fc">
+  <title>Lương Triều Dĩ | Website Profile Sinh viên</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="page-shell">
-    <header class="site-header">
-      <a class="brand" href="{{ url_for('index') }}" aria-label="Trang chủ Cloud Lab">
-        <span class="brand-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M7 18h11a4 4 0 0 0 .3-8A6.5 6.5 0 0 0 5.8 8.6 4.8 4.8 0 0 0 7 18Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+  <a class="skip-link" href="#main-content">Đến nội dung chính</a>
+  <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <symbol id="icon-school" viewBox="0 0 24 24">
+      <path d="M3 9h18L12 4 3 9ZM4 20h16M6 12v5m6-5v5m6-5v5"/>
+    </symbol>
+    <symbol id="icon-person" viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="3"/><path d="M5 20v-1a7 7 0 0 1 14 0v1"/>
+    </symbol>
+    <symbol id="icon-code" viewBox="0 0 24 24">
+      <path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-12-2 14"/>
+    </symbol>
+    <symbol id="icon-group" viewBox="0 0 24 24">
+      <circle cx="9" cy="8" r="3"/><path d="M3 20v-1a6 6 0 0 1 12 0v1M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5v1"/>
+    </symbol>
+    <symbol id="icon-cloud" viewBox="0 0 24 24">
+      <path d="M7 18h11a4 4 0 0 0 .3-8A6.5 6.5 0 0 0 5.8 8.6 4.8 4.8 0 0 0 7 18Z"/>
+    </symbol>
+    <symbol id="icon-book" viewBox="0 0 24 24">
+      <path d="M12 6v14m0-14C9 4 6 4 3 5v14c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1Z"/>
+    </symbol>
+  </svg>
+
+  <header class="site-header">
+    <div class="page-width header-content">
+      <a class="brand" href="#trang-chu">
+        <span class="brand-mark" aria-hidden="true"><svg class="icon"><use href="#icon-school"/></svg></span>
+        <span class="brand-text">
+          <strong>ĐẠI HỌC THỦ DẦU MỘT</strong>
+          <span>Website Profile Sinh viên</span>
         </span>
-        Cloud<span class="brand-light">Lab.</span>
       </a>
-      <span class="header-note">ĐIỆN TOÁN ĐÁM MÂY <span class="header-divider">/</span> BÀI THỰC HÀNH 03</span>
-    </header>
+      <nav aria-label="Điều hướng chính">
+        <ul class="nav-list">
+          <li><a href="#trang-chu">Trang chủ</a></li>
+          <li><a href="#gioi-thieu">Giới thiệu</a></li>
+          <li><a href="#thong-tin-hoc-tap">Thông tin học tập</a></li>
+          <li><a href="#cloud-computing">Cloud Computing</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-    <main>
-      <section class="hero" aria-labelledby="page-title">
-        <div class="hero-copy">
-          <p class="eyebrow"><span aria-hidden="true"></span> PLATFORM AS A SERVICE</p>
-          <h1 id="page-title">CLOUD COMPUTING <span>– TASK 03</span></h1>
-          <p class="hero-subtitle">Triển khai ứng dụng Python Flask trên nền tảng PaaS</p>
-          <p class="hero-description">Từ mã nguồn đến ứng dụng web. Một bản demo nhỏ để khám phá cách Render vận hành ứng dụng Python trên đám mây.</p>
-          <div class="app-status"><span class="status-dot" aria-hidden="true"></span>Ứng dụng đang hoạt động</div>
+  <main id="main-content" class="page-width" tabindex="-1">
+    <section id="trang-chu" class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span aria-hidden="true"></span> Hồ sơ sinh viên</p>
+        <h1 id="page-title">LƯƠNG <br>TRIỀU DĨ</h1>
+        <p class="hero-subtitle">Sinh viên Công nghệ thông tin <span>– CNTT01</span></p>
+        <p class="hero-school"><svg class="icon" aria-hidden="true"><use href="#icon-school"/></svg> Đại học Thủ Dầu Một</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#gioi-thieu">Xem thông tin cá nhân</a>
+          <a class="button button-secondary" href="#cloud-computing">Bài thực hành</a>
         </div>
-
-        <div class="architecture" aria-label="Luồng triển khai: mã nguồn Python Flask lên nền tảng Render để cung cấp ứng dụng web">
-          <div class="architecture-top"><span class="small-label">LUỒNG TRIỂN KHAI</span><span class="diagram-tag">PaaS</span></div>
-          <div class="source-node">
-            <span class="code-icon" aria-hidden="true">&lt;/&gt;</span>
-            <div><strong>Python + Flask</strong><span>Mã nguồn ứng dụng</span></div>
-            <span class="file-tag">app.py</span>
-          </div>
-          <div class="connector" aria-hidden="true"><span>↓</span><small>BUILD &amp; DEPLOY</small></div>
-          <div class="platform-node">
-            <span class="platform-symbol" aria-hidden="true">R</span>
-            <div><strong>Render</strong><span>Platform as a Service</span></div>
-            <svg class="cloud-outline" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 18h11a4 4 0 0 0 .3-8A6.5 6.5 0 0 0 5.8 8.6 4.8 4.8 0 0 0 7 18Z" stroke="currentColor" stroke-width="1.5"/></svg>
-          </div>
-          <p class="diagram-caption">Bạn viết ứng dụng. Nền tảng quản lý hạ tầng.</p>
-          <p class="diagram-footnote">Sơ đồ minh họa mô hình triển khai</p>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="avatar-orbit">
+          <span class="orbit-dot orbit-dot-top"></span>
+          <span class="orbit-dot orbit-dot-bottom"></span>
+          <span class="avatar-card">
+            <span class="avatar">
+              <span class="avatar-head"></span>
+              <span class="avatar-body"></span>
+            </span>
+          </span>
         </div>
-      </section>
+        <span class="art-icon art-icon-code"><svg class="icon"><use href="#icon-code"/></svg></span>
+        <span class="art-icon art-icon-cloud"><svg class="icon"><use href="#icon-cloud"/></svg></span>
+      </div>
+    </section>
 
-      <section class="stack-strip" aria-label="Thông tin công nghệ">
-        <div><span class="stack-label">NỀN TẢNG</span><strong>Render <span class="mini-arrow" aria-hidden="true">↗</span></strong></div>
-        <div><span class="stack-label">NGÔN NGỮ LẬP TRÌNH</span><strong>Python</strong></div>
-        <div><span class="stack-label">FRAMEWORK</span><strong>Flask</strong></div>
-        <div><span class="stack-label">MÔ HÌNH DỊCH VỤ</span><strong>PaaS <span class="stack-detail">Platform as a Service</span></strong></div>
-      </section>
+    <section id="gioi-thieu" class="section" aria-labelledby="about-title">
+      <div class="section-heading">
+        <p class="eyebrow">Giới thiệu</p>
+        <h2 id="about-title">Thông tin cá nhân</h2>
+      </div>
+      <dl class="profile-grid">
+        <div class="profile-card">
+          <dt><span class="card-icon" aria-hidden="true"><svg class="icon"><use href="#icon-person"/></svg></span>Họ và tên</dt>
+          <dd>Lương Triều Dĩ</dd>
+        </div>
+        <div class="profile-card">
+          <dt><span class="card-icon" aria-hidden="true"><svg class="icon"><use href="#icon-school"/></svg></span>Trường</dt>
+          <dd>Đại học Thủ Dầu Một</dd>
+        </div>
+        <div class="profile-card">
+          <dt><span class="card-icon" aria-hidden="true"><svg class="icon"><use href="#icon-code"/></svg></span>Ngành</dt>
+          <dd>Công nghệ thông tin</dd>
+        </div>
+        <div class="profile-card">
+          <dt><span class="card-icon" aria-hidden="true"><svg class="icon"><use href="#icon-group"/></svg></span>Lớp</dt>
+          <dd>CNTT01</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section id="thong-tin-hoc-tap" class="section" aria-labelledby="course-title">
+      <div class="course-panel">
+        <div class="course-intro">
+          <span class="course-icon" aria-hidden="true"><svg class="icon"><use href="#icon-book"/></svg></span>
+          <p class="eyebrow">Thông tin học tập</p>
+          <h2 id="course-title">THỰC HÀNH <br>ĐIỆN TOÁN ĐÁM MÂY</h2>
+        </div>
+        <dl class="course-details">
+          <div><dt>Môn học</dt><dd>Thực hành Điện toán đám mây</dd></div>
+          <div><dt>Giảng viên hướng dẫn</dt><dd>ThS. Nguyễn Xuân Cường</dd></div>
+          <div><dt>Sinh viên thực hiện</dt><dd>Lương Triều Dĩ</dd></div>
+          <div><dt>Lớp</dt><dd>CNTT01</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section id="cloud-computing" class="section cloud-section" aria-labelledby="cloud-title">
+      <div class="section-heading cloud-intro">
+        <p class="eyebrow">Cloud Computing</p>
+        <h2 id="cloud-title">Triển khai ứng dụng Web trên AWS Elastic Beanstalk</h2>
+        <p>Website Profile sinh viên được xây dựng nhằm phục vụ bài thực hành triển khai ứng dụng web trên nền tảng điện toán đám mây AWS Elastic Beanstalk, tìm hiểu quy trình triển khai ứng dụng, truy cập thông qua URL công khai và cấu hình Auto Scaling.</p>
+        <ul class="tech-list" aria-label="Công nghệ sử dụng">
+          <li>HTML5 / CSS3</li>
+          <li>Python Flask</li>
+          <li>GitHub</li>
+          <li>AWS Elastic Beanstalk</li>
+        </ul>
+      </div>
 
       <section class="health-section" aria-labelledby="health-title">
         <div class="health-copy">
-          <p class="eyebrow muted">KẾT NỐI VỚI BACKEND</p>
-          <h2 id="health-title">Một cú nhấn.<br>Một phản hồi thật.</h2>
-          <p>Gửi yêu cầu đến Flask và xem JSON trả về từ endpoint <code>/health</code> để kiểm tra backend.</p>
-          <button id="check-button" type="button"><span id="button-label">Kiểm tra ứng dụng</span><span aria-hidden="true">↗</span></button>
-          <p class="request-note">JavaScript fetch → Flask → JSON</p>
-          <noscript><p class="noscript-note">Hãy bật JavaScript hoặc mở trực tiếp <a href="{{ url_for('health') }}">/health</a> để kiểm tra.</p></noscript>
+          <h3 id="health-title">Kiểm tra kết nối Flask</h3>
+          <p>Xem phản hồi thực tế từ <a class="health-link" href="{{ url_for('health') }}"><code>/health</code></a>.</p>
+          <button class="button button-primary" id="check-button" type="button" data-url="{{ url_for('health') }}" hidden>Kiểm tra ứng dụng</button>
         </div>
         <div class="response-panel">
-          <div class="response-toolbar"><span><span class="method-tag">GET</span> /health</span><span id="response-badge" class="response-badge">CHƯA KIỂM TRA</span></div>
-          <div class="response-content">
-            <p class="terminal-label">PHẢN HỒI TỪ MÁY CHỦ</p>
-            <pre id="response-body">// Nhấn “Kiểm tra ứng dụng”
-// để nhận phản hồi trực tiếp từ Flask.</pre>
+          <div class="response-toolbar">
+            <span><span class="method-tag">GET</span> /health</span>
+            <span id="response-badge" class="response-badge">Chưa kiểm tra</span>
           </div>
-          <p id="request-status" class="request-status" role="status" aria-live="polite">Sẵn sàng gửi yêu cầu.</p>
+          <pre id="response-body" class="response-body">Kết quả JSON sẽ hiển thị tại đây.</pre>
+          <p id="request-status" class="request-status" role="status"></p>
         </div>
       </section>
-    </main>
+    </section>
+  </main>
 
-    <footer><span>Cloud Computing <span aria-hidden="true">·</span> Task 03</span><span>Python Flask <span aria-hidden="true">/</span> Render PaaS</span></footer>
-  </div>
+  <footer class="site-footer">
+    <div class="page-width footer-content">
+      <div class="footer-identity">
+        <span class="brand-mark" aria-hidden="true"><svg class="icon"><use href="#icon-school"/></svg></span>
+        <div><strong>Đại học Thủ Dầu Một</strong><p>Lương Triều Dĩ – CNTT01</p></div>
+      </div>
+      <div class="footer-course">
+        <strong>Thực hành Điện toán đám mây</strong>
+        <p>GVHD: ThS. Nguyễn Xuân Cường</p>
+      </div>
+    </div>
+  </footer>
 
   <script>
     const button = document.getElementById("check-button");
-    const buttonLabel = document.getElementById("button-label");
     const responseBody = document.getElementById("response-body");
     const responseBadge = document.getElementById("response-badge");
     const requestStatus = document.getElementById("request-status");
 
+    button.hidden = false;
     button.addEventListener("click", async () => {
       button.disabled = true;
-      buttonLabel.textContent = "Đang kiểm tra…";
-      responseBadge.textContent = "ĐANG GỬI";
+      button.textContent = "Đang kiểm tra…";
+      responseBadge.textContent = "Đang gửi";
       responseBadge.className = "response-badge";
+      responseBody.textContent = "";
       requestStatus.textContent = "Đang gọi GET /health…";
+
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 10000);
 
       try {
-        const response = await fetch({{ url_for('health') | tojson }}, {
+        const response = await fetch(button.dataset.url, {
           cache: "no-store",
           signal: controller.signal
         });
-        if (!response.ok) throw new Error(`Máy chủ trả về HTTP ${response.status}.`);
+        if (!response.ok) throw new Error("Máy chủ trả về HTTP " + response.status + ".");
+
         const data = await response.json();
         if (data.status !== "ok" || typeof data.message !== "string") {
           throw new Error("Phản hồi JSON không đúng cấu trúc mong đợi.");
         }
+
         responseBody.textContent = JSON.stringify(data, null, 2);
-        responseBadge.textContent = `${response.status} OK`;
+        responseBadge.textContent = response.status + " OK";
         responseBadge.className = "response-badge success";
-        requestStatus.textContent = "Kiểm tra thành công. Backend Flask đã phản hồi.";
+        requestStatus.textContent = "Backend Flask đã phản hồi.";
       } catch (error) {
-        responseBadge.textContent = "LỖI KẾT NỐI";
-        responseBadge.className = "response-badge error";
-        const message = error.name === "AbortError"
-          ? "Yêu cầu quá thời gian chờ 10 giây. Hãy thử lại."
+        responseBody.textContent = error.name === "AbortError"
+          ? "Yêu cầu quá thời gian chờ 10 giây."
           : error.message;
-        responseBody.textContent = message;
-        requestStatus.textContent = "Kiểm tra chưa thành công. Kiểm tra kết nối và thử lại.";
+        responseBadge.textContent = "Kiểm tra thất bại";
+        responseBadge.className = "response-badge error";
+        requestStatus.textContent = "Hãy kiểm tra kết nối và thử lại.";
       } finally {
         clearTimeout(timer);
         button.disabled = false;
-        buttonLabel.textContent = "Kiểm tra ứng dụng";
+        button.textContent = "Kiểm tra ứng dụng";
       }
     });
   </script>
