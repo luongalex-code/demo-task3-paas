@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý ghi chú học tập | Lương Triều Dĩ</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Đến nội dung chính</a>
+  <header class="site-header">
+    <div class="page-width header-content">
+      <a class="brand" href="{{ url_for('index') }}">
+        <span class="brand-mark" aria-hidden="true">TDM</span>
+        <span class="brand-text">
+          <strong>ĐẠI HỌC THỦ DẦU MỘT</strong>
+          <span>Website Profile Sinh viên</span>
+        </span>
+      </a>
+      <nav aria-label="Điều hướng chính">
+        <ul class="nav-list">
+          <li><a href="{{ url_for('index') }}">Trang chủ</a></li>
+          <li><a href="{{ url_for('notes.index') }}" aria-current="page">Ghi chú</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content" class="page-width notes-page" tabindex="-1">
+    <div class="section-heading notes-heading">
+      <p class="eyebrow">Thực hành Điện toán đám mây</p>
+      <h1>Quản lý ghi chú học tập</h1>
+    </div>
+
+    {% if page_error %}
+    <section class="profile-card notes-panel">
+      <h2>Không thể mở ghi chú</h2>
+      <p class="notes-alert" role="alert">{{ page_error }}</p>
+      <a class="button button-secondary" href="{{ url_for('notes.index') }}">Về danh sách</a>
+    </section>
+    {% elif mode == 'delete' %}
+    <section class="profile-card notes-panel">
+      <h2>Xác nhận xóa ghi chú</h2>
+      <p>Ghi chú này sẽ bị xóa khỏi danh sách.</p>
+      <blockquote class="notes-quote">{{ content }}</blockquote>
+      <form class="notes-actions" method="post" action="{{ url_for('notes.delete', note_id=note_id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button class="button button-danger" type="submit">Xác nhận xóa</button>
+        <a class="button button-secondary" href="{{ url_for('notes.index') }}">Hủy</a>
+      </form>
+    </section>
+    {% else %}
+    {% if result %}<p class="notes-alert notes-success" role="status">{{ result }}</p>{% endif %}
+    <div class="{{ 'notes-editor' if mode == 'edit' else 'notes-grid' }}">
+      <section class="profile-card notes-panel">
+        <h2>{{ 'Sửa ghi chú' if mode == 'edit' else 'Thêm ghi chú' }}</h2>
+        <form class="notes-form" method="post" action="{{ url_for('notes.edit', note_id=note_id) if mode == 'edit' else url_for('notes.index') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <label for="content">Nội dung</label>
+          <textarea id="content" name="content" rows="5" maxlength="{{ max_content }}" required aria-describedby="notes-content-hint{% if form_error %} notes-form-error{% endif %}"{% if form_error %} aria-invalid="true"{% endif %}>{{ content }}</textarea>
+          <p id="notes-content-hint" class="notes-muted">Tối đa {{ max_content }} ký tự.</p>
+          {% if form_error %}<p id="notes-form-error" class="notes-alert" role="alert">{{ form_error }}</p>{% endif %}
+          <div class="notes-actions">
+            <button class="button button-primary" type="submit">{{ 'Lưu thay đổi' if mode == 'edit' else 'Thêm' }}</button>
+            {% if mode == 'edit' %}<a class="button button-secondary" href="{{ url_for('notes.index') }}">Hủy</a>{% endif %}
+          </div>
+        </form>
+      </section>
+
+      {% if mode != 'edit' %}
+      <section class="profile-card notes-panel" aria-labelledby="notes-list-title">
+        <h2 id="notes-list-title">Danh sách ghi chú</h2>
+        {% if records %}
+        <table class="notes-table" aria-labelledby="notes-list-title">
+          <thead><tr><th scope="col">Nội dung</th><th scope="col">Ngày tạo</th><th scope="col">Thao tác</th></tr></thead>
+          <tbody>
+          {% for note in records %}
+            <tr>
+              <td class="note-content">{{ note.content }}</td>
+              <td><time datetime="{{ note.created_at.isoformat() }}">{{ note.created_at.strftime('%d/%m/%Y') }}<span>{{ note.created_at.strftime('%H:%M') }}</span></time></td>
+              <td>
+                <div class="notes-actions">
+                  <a class="notes-edit" href="{{ url_for('notes.edit', note_id=note.id) }}" aria-label="Sửa ghi chú {{ note.id }}">Sửa</a>
+                  <a class="notes-delete" href="{{ url_for('notes.delete', note_id=note.id) }}" aria-label="Xóa ghi chú {{ note.id }}">Xóa</a>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p class="notes-muted">Chưa có ghi chú. Thêm nội dung học tập bằng biểu mẫu.</p>
+        {% endif %}
+      </section>
+      {% endif %}
+    </div>
+    {% endif %}
+  </main>
+</body>
+</html>

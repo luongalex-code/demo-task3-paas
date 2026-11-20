@@ -6,8 +6,11 @@ import time
 
 from flask import Flask, jsonify, render_template
 
+from notes import notes
+
 app = Flask(__name__)
 app.json.ensure_ascii = False
+app.register_blueprint(notes)
 
 
 @app.get("/")

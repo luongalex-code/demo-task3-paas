@@ -17,7 +17,7 @@ paas-task03/
 └── README.md
 ```
 
-`app.py` định nghĩa hai endpoint. `index.html` chứa giao diện và JavaScript gọi `/health`. `style.css` tạo giao diện responsive bằng CSS thuần, không dùng font hoặc thư viện từ CDN.
+`app.py` khởi chạy Flask và đăng ký module ghi chú. `index.html` chứa giao diện và JavaScript gọi `/health`. `style.css` tạo giao diện responsive bằng CSS thuần, không dùng font hoặc thư viện từ CDN.
 
 ## 2. Cài đặt và chạy trên Windows
 
@@ -81,6 +81,23 @@ Kiểm tra cú pháp Python:
 ```
 
 Thứ tự hai khóa trong JSON không ảnh hưởng ý nghĩa của phản hồi.
+
+## Ghi chú học tập với MySQL
+
+Trang `/notes` sử dụng `db.py` để kết nối MySQL, `notes.py` để xử lý biểu mẫu và `templates/notes.html` để hiển thị dữ liệu. Ghi chú là dữ liệu dùng chung của bài lab. Chức năng `/health` tiếp tục kiểm tra Flask độc lập với database.
+
+| Biến môi trường | Giá trị |
+| --- | --- |
+| `DB_HOST` | Tên DNS endpoint MySQL khớp với chứng chỉ máy chủ |
+| `DB_PORT` | Cổng MySQL, mặc định `3306` |
+| `DB_NAME` | Tên database, mặc định `cloudlabdb` |
+| `DB_USER` | Tài khoản ứng dụng có quyền `SELECT`, `INSERT`, `UPDATE`, `DELETE` trên `cloudlabdb.notes` |
+| `DB_PASSWORD` | Mật khẩu tài khoản ứng dụng, cấp qua môi trường chạy |
+| `DB_CA_BUNDLE` | Đường dẫn CA tin cậy, mặc định `certs/ap-southeast-2-bundle.pem` |
+
+Kết nối yêu cầu TLS, xác thực CA và tên máy chủ. Dùng [CA bundle của Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html) tương ứng với vùng và dùng endpoint RDS trong `DB_HOST`. Đường dẫn `DB_CA_BUNDLE` tương đối được tính từ thư mục dự án.
+
+Áp dụng `sql/notes.sql` một lần vào database `cloudlabdb` bằng tài khoản quản trị schema được phép. SQL chỉ tạo bảng khi bảng chưa có. Sau khi cấu hình biến môi trường, `python app.py` vẫn dùng để chạy local. Trên Elastic Beanstalk, `Procfile` tiếp tục khởi chạy `app:app`.
 
 ## 4. Đẩy mã nguồn lên GitHub
 
