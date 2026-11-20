@@ -1,18 +1,14 @@
 """Routes and form validation for study notes."""
 
-import re
-import secrets
+from flask import Blueprint, redirect, render_template, request, url_for
 
-from flask import Blueprint, make_response, redirect, render_template, request, url_for
-
+from auth import signed_in, valid_csrf
 from db import DatabaseUnavailable, db_cursor
 
 
 notes = Blueprint("notes", __name__, url_prefix="/notes")
 MAX_CONTENT = 255
 MAX_NOTE_ID = 2_147_483_647
-CSRF_COOKIE = "study_notes_csrf"
-TOKEN_PATTERN = re.compile(r"[A-Za-z0-9_-]{43}")
 RESULT_MESSAGES = {
     "created": "Đã thêm ghi chú.",
     "updated": "Đã lưu thay đổi.",
@@ -21,18 +17,16 @@ RESULT_MESSAGES = {
 
 
 @notes.before_request
-def verify_csrf():
-    if request.method != "POST":
+def protect_note_actions():
+    if request.endpoint == "notes.index" and request.method in {"GET", "HEAD"}:
         return
 
-    cookie_token = request.cookies.get(CSRF_COOKIE, "")
-    form_token = request.form.get("csrf_token", "")
-    if not (
-        request.headers.get("Sec-Fetch-Site") not in {"cross-site", "same-site"}
-        and TOKEN_PATTERN.fullmatch(cookie_token)
-        and TOKEN_PATTERN.fullmatch(form_token)
-        and secrets.compare_digest(cookie_token, form_token)
-    ):
+    if not signed_in():
+        if request.method in {"GET", "HEAD"}:
+            return redirect(url_for("auth.login"))
+        return render_template("notes.html", page_error="Hãy đăng nhập qua HTTPS để thay đổi ghi chú."), 403
+
+    if request.method == "POST" and not valid_csrf():
         return render_template("notes.html", page_error="Biểu mẫu đã hết hiệu lực. Hãy mở lại trang ghi chú và thử lại."), 403
 
 
@@ -49,17 +43,7 @@ def database_unavailable(_error):
 
 
 def render_form(*, status=200, **context):
-    token = request.cookies.get(CSRF_COOKIE, "")
-    new_token = not TOKEN_PATTERN.fullmatch(token)
-    if new_token:
-        token = secrets.token_urlsafe(32)
-    html = render_template("notes.html", csrf_token=token, max_content=MAX_CONTENT, **context)
-    if not new_token:
-        return html, status
-
-    response = make_response(html, status)
-    response.set_cookie(CSRF_COOKIE, token, httponly=True, secure=request.is_secure, samesite="Strict", path="/notes")
-    return response
+    return render_template("notes.html", max_content=MAX_CONTENT, **context), status
 
 
 def submitted_content():
@@ -70,7 +54,7 @@ def submitted_content():
 
 
 def show_list(content="", form_error=None):
-    with db_cursor() as cursor:
+    with db_cursor(for_notes=True) as cursor:
         cursor.execute("SELECT id, content, created_at FROM notes ORDER BY id DESC")
         records = cursor.fetchall()
     return render_form(
@@ -83,7 +67,7 @@ def show_list(content="", form_error=None):
 
 
 def find_note(note_id):
-    with db_cursor() as cursor:
+    with db_cursor(for_notes=True) as cursor:
         cursor.execute("SELECT id, content FROM notes WHERE id = %s", (note_id,))
         return cursor.fetchone()
 
@@ -98,7 +82,7 @@ def index():
         content, form_error = submitted_content()
         if form_error:
             return show_list(content, form_error)
-        with db_cursor() as cursor:
+        with db_cursor(for_notes=True) as cursor:
             cursor.execute("INSERT INTO notes (content) VALUES (%s)", (content,))
         return redirect(url_for("notes.index", result="created"), code=303)
     return show_list()
@@ -114,7 +98,7 @@ def edit(note_id):
             if not find_note(note_id):
                 return note_missing()
             return render_form(mode="edit", note_id=note_id, content=content, form_error=form_error, status=422)
-        with db_cursor() as cursor:
+        with db_cursor(for_notes=True) as cursor:
             cursor.execute("UPDATE notes SET content = %s WHERE id = %s", (content, note_id))
             if not cursor.rowcount:
                 return note_missing()
@@ -131,7 +115,7 @@ def delete(note_id):
     if not 1 <= note_id <= MAX_NOTE_ID:
         return note_missing()
     if request.method == "POST":
-        with db_cursor() as cursor:
+        with db_cursor(for_notes=True) as cursor:
             cursor.execute("DELETE FROM notes WHERE id = %s", (note_id,))
             if not cursor.rowcount:
                 return note_missing()

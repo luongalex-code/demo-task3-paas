@@ -84,7 +84,7 @@ Thứ tự hai khóa trong JSON không ảnh hưởng ý nghĩa của phản h�
 
 ## Ghi chú học tập với MySQL
 
-Trang `/notes` sử dụng `db.py` để kết nối MySQL, `notes.py` để xử lý biểu mẫu và `templates/notes.html` để hiển thị dữ liệu. Ghi chú là dữ liệu dùng chung của bài lab. Chức năng `/health` tiếp tục kiểm tra Flask độc lập với database.
+Trang `/notes` sử dụng `db.py` để kết nối MySQL, `notes.py` để xử lý biểu mẫu và `templates/notes.html` để hiển thị dữ liệu. Danh sách ghi chú được đọc công khai. Thêm, sửa và xóa yêu cầu phiên quản trị HTTPS. Chức năng `/health` tiếp tục kiểm tra Flask độc lập với database.
 
 | Biến môi trường | Giá trị |
 | --- | --- |
@@ -98,6 +98,26 @@ Trang `/notes` sử dụng `db.py` để kết nối MySQL, `notes.py` để x�
 Kết nối yêu cầu TLS, xác thực CA và tên máy chủ. Dùng [CA bundle của Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html) tương ứng với vùng và dùng endpoint RDS trong `DB_HOST`. Đường dẫn `DB_CA_BUNDLE` tương đối được tính từ thư mục dự án.
 
 Khi truy cập `/notes`, ứng dụng kiểm tra bảng và tự chạy `sql/notes.sql` nếu MySQL báo bảng chưa tồn tại. Để dùng tính năng này, tài khoản ứng dụng cần quyền `CREATE` cho bảng. Nếu tài khoản ứng dụng chỉ có quyền CRUD, người quản trị schema có thể áp dụng file SQL vào `cloudlabdb` trước. Sau khi cấu hình biến môi trường, `python app.py` vẫn dùng để chạy local. Trên Elastic Beanstalk, `Procfile` tiếp tục khởi chạy `app:app`.
+
+### Task 03: tài khoản quản trị và HTTPS
+
+Từ máy quản trị có đường truy cập riêng tới RDS, cấu hình các biến `DB_*` cho phiên làm việc và chạy lệnh sau bằng tài khoản MySQL có quyền tạo bảng và thêm vào `users`:
+
+```powershell
+python -m flask --app app auth create-admin admin-lab
+```
+
+Lệnh tạo bảng từ `sql/users.sql` và nhắc nhập, xác nhận mật khẩu bằng chế độ ẩn. Chỉ hash scrypt được lưu. Tài khoản MySQL của web cần `SELECT` trên `cloudlabdb.users` và các quyền ghi chú nêu trên.
+
+Để kích hoạt đăng nhập trên AWS sau khi được phê duyệt:
+
+1. Dùng tên miền bạn quản lý, chứng chỉ ACM khớp tên miền tại `ap-southeast-2`, và listener **HTTPS 443** trên Application Load Balancer của Beanstalk. Trỏ DNS của tên miền đến môi trường và chuyển hướng HTTP sang HTTPS tại Load Balancer. [Hướng dẫn TLS của Elastic Beanstalk](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/configuring-https-elb.html)
+2. Giới hạn đường vào Nginx trên EC2 qua security group của ALB. Nginx cần chuyển tiếp `X-Forwarded-Proto` do ALB xác định đến Gunicorn. `gunicorn.conf.py` chỉ tin header này từ Nginx trên loopback. [Header của ALB](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/x-forwarded-headers.html)
+3. Xác minh HTTPS bằng chứng chỉ hợp lệ. Trước khi cấp khóa, `/login` qua HTTPS phải báo chưa kích hoạt (`503`). HTTP phải chuyển hướng ở ALB hoặc nhận `403` từ Flask, kể cả khi gửi `X-Forwarded-Proto: https`. Sau đó cấp `SECRET_KEY` ngẫu nhiên riêng cho môi trường qua cơ chế quản lý bí mật. Dùng ít nhất 32 ký tự và cùng một khóa trên các instance. Kiểm tra lại `/login` qua HTTPS và HTTP sau khi cấu hình. Cookie phiên dùng `Secure`, `HttpOnly`, `SameSite=Strict` và phiên quản trị hết hạn sau 30 phút.
+
+Để thử với chứng chỉ phát triển cục bộ, thiết lập `SECRET_KEY` ngẫu nhiên cho phiên shell và chạy `python -m flask --app app run --cert=adhoc --host 127.0.0.1`. Dùng tài khoản và database kiểm thử khi thao tác CRUD.
+
+Mục Cloud Security trên Profile là ảnh chụp trạng thái cấu hình có ghi ngày xác minh. Đối với evidence về phục hồi, xem `Backup retention period` và `Latest restorable time` trong RDS trước khi ghi nhận khả năng khôi phục theo thời điểm. [Quản lý backup tự động RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ManagingAutomatedBackups.html)
 
 ## 4. Đẩy mã nguồn lên GitHub
 

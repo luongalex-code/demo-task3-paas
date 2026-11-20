@@ -1,4 +1,4 @@
-"""Short-lived MySQL connections for the study notes module."""
+"""Short-lived, TLS-verified MySQL connections."""
 
 import os
 from contextlib import contextmanager
@@ -66,13 +66,14 @@ def ensure_notes_table(cursor):
 
 
 @contextmanager
-def db_cursor():
+def db_cursor(*, for_notes=False):
     try:
         with pymysql.connect(**connection_options()) as connection:
             with connection.cursor() as cursor:
-                ensure_notes_table(cursor)
+                if for_notes:
+                    ensure_notes_table(cursor)
                 yield cursor
     except (pymysql.MySQLError, OSError) as error:
         code = error.args[0] if error.args and isinstance(error.args[0], int) else None
-        current_app.logger.warning("Notes database operation failed (%s, code=%s)", type(error).__name__, code)
+        current_app.logger.warning("Database operation failed (%s, code=%s)", type(error).__name__, code)
         raise DatabaseUnavailable from None

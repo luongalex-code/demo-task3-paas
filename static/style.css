@@ -727,11 +727,9 @@ body:has(#cloud-computing:target) .nav-list a[href="#cloud-computing"] {
   font-weight: 650;
 }
 
-.notes-form textarea {
+.notes-form :is(textarea, input:not([type="hidden"])) {
   width: 100%;
-  min-height: 7.5rem;
   padding: 0.7rem 0.8rem;
-  resize: vertical;
   border: 1px solid #9aadc7;
   border-radius: 0.65rem;
   color: var(--ink);
@@ -739,7 +737,12 @@ body:has(#cloud-computing:target) .nav-list a[href="#cloud-computing"] {
   font: inherit;
 }
 
-.notes-form textarea:focus-visible {
+.notes-form textarea {
+  min-height: 7.5rem;
+  resize: vertical;
+}
+
+.notes-form :is(textarea, input):focus-visible {
   outline: 3px solid var(--blue);
   outline-offset: 2px;
 }
@@ -747,6 +750,34 @@ body:has(#cloud-computing:target) .nav-list a[href="#cloud-computing"] {
 .notes-muted {
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+.auth-shell {
+  display: grid;
+  max-width: 29rem;
+  gap: 1.25rem;
+  margin-inline: auto;
+}
+
+.auth-shell h1 {
+  font-size: clamp(1.8rem, 6vw, 2.4rem);
+}
+
+.auth-shell .notes-actions,
+.auth-shell .notes-muted {
+  margin-top: 0.35rem;
+}
+
+.notes-access-note {
+  margin-bottom: 0.8rem;
+}
+
+.cloud-security {
+  margin-top: 2rem;
+}
+
+.security-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .notes-actions {
@@ -855,6 +886,12 @@ body:has(#cloud-computing:target) .nav-list a[href="#cloud-computing"] {
 
 @media (max-width: 52rem) {
   .notes-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 42rem) {
+  .profile-grid.security-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 }

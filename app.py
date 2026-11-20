@@ -1,15 +1,28 @@
-"""Demo Flask cho bài thực hành triển khai PaaS trên Render."""
+"""Website Profile sinh viên và ứng dụng ghi chú học tập."""
 
 import os
 import socket
 import time
+from datetime import timedelta
 
 from flask import Flask, jsonify, render_template
 
+from auth import auth
 from notes import notes
 
 app = Flask(__name__)
+app.config.update(
+    SECRET_KEY=os.environ.get("SECRET_KEY") or None,
+    SESSION_COOKIE_NAME="__Host-student_profile",
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Strict",
+    SESSION_COOKIE_PATH="/",
+    PERMANENT_SESSION_LIFETIME=timedelta(minutes=30),
+    SESSION_REFRESH_EACH_REQUEST=False,
+)
 app.json.ensure_ascii = False
+app.register_blueprint(auth)
 app.register_blueprint(notes)
 
 
