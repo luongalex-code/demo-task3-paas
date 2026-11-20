@@ -6,12 +6,13 @@ from pathlib import Path
 
 import pymysql
 from flask import current_app
-from pymysql.constants import CLIENT
+from pymysql.constants import CLIENT, ER
 from pymysql.cursors import DictCursor
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 DEFAULT_CA = PROJECT_ROOT / "certs" / "ap-southeast-2-bundle.pem"
+NOTES_SCHEMA = PROJECT_ROOT / "sql" / "notes.sql"
 
 
 class DatabaseUnavailable(Exception):
@@ -55,11 +56,21 @@ def connection_options():
     }
 
 
+def ensure_notes_table(cursor):
+    try:
+        cursor.execute("SELECT 1 FROM notes LIMIT 0")
+    except pymysql.err.ProgrammingError as error:
+        if error.args[0] != ER.NO_SUCH_TABLE:
+            raise
+        cursor.execute(NOTES_SCHEMA.read_text(encoding="utf-8"))
+
+
 @contextmanager
 def db_cursor():
     try:
         with pymysql.connect(**connection_options()) as connection:
             with connection.cursor() as cursor:
+                ensure_notes_table(cursor)
                 yield cursor
     except (pymysql.MySQLError, OSError) as error:
         code = error.args[0] if error.args and isinstance(error.args[0], int) else None

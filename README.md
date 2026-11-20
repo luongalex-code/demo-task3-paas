@@ -97,7 +97,7 @@ Trang `/notes` sử dụng `db.py` để kết nối MySQL, `notes.py` để x�
 
 Kết nối yêu cầu TLS, xác thực CA và tên máy chủ. Dùng [CA bundle của Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html) tương ứng với vùng và dùng endpoint RDS trong `DB_HOST`. Đường dẫn `DB_CA_BUNDLE` tương đối được tính từ thư mục dự án.
 
-Áp dụng `sql/notes.sql` một lần vào database `cloudlabdb` bằng tài khoản quản trị schema được phép. SQL chỉ tạo bảng khi bảng chưa có. Sau khi cấu hình biến môi trường, `python app.py` vẫn dùng để chạy local. Trên Elastic Beanstalk, `Procfile` tiếp tục khởi chạy `app:app`.
+Khi truy cập `/notes`, ứng dụng kiểm tra bảng và tự chạy `sql/notes.sql` nếu MySQL báo bảng chưa tồn tại. Để dùng tính năng này, tài khoản ứng dụng cần quyền `CREATE` cho bảng. Nếu tài khoản ứng dụng chỉ có quyền CRUD, người quản trị schema có thể áp dụng file SQL vào `cloudlabdb` trước. Sau khi cấu hình biến môi trường, `python app.py` vẫn dùng để chạy local. Trên Elastic Beanstalk, `Procfile` tiếp tục khởi chạy `app:app`.
 
 ## 4. Đẩy mã nguồn lên GitHub
 
